@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # MySQL Settings
 MYSQL_HOST = os.getenv('MYSQL_HOST')
