@@ -15,17 +15,17 @@ async def use_code_on_user(request: Request, response: Response):
     if len(code) != 18:
         # Invalid code length
         response.status_code = status.HTTP_403_FORBIDDEN
-        return {"status": 403, "message": "Invalid code"}
+        return {"status": 403, "message": "无效的兑换码\nInvalid code"}
     if not redemption.validate_redemption_code(code):
         # Code does not exist (whatever status is)
         response.status_code = status.HTTP_403_FORBIDDEN
-        return {"status": 403, "message": "Invalid code"}
+        return {"status": 403, "message": "无效的兑换码\nInvalid code"}
 
     func_result = redemption.use_redemption_code(code, user_name)
     if func_result == 0:
         # Code may already be used
         response.status_code = status.HTTP_403_FORBIDDEN
-        return {"status": 403, "message": "Invalid code"}
+        return {"status": 403, "message": "无效的兑换码\nInvalid code"}
     elif func_result >= 1:
         code_value = redemption.get_code_value(code)
         redeem_result = homa.assign_homa_user_membership_time(user_name, code_value)
@@ -35,7 +35,7 @@ async def use_code_on_user(request: Request, response: Response):
             code_reset_result = redemption.reset_code(code)
             if code_reset_result:
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                return {"status": 500, "message": "兑换失败，兑换码未消耗"}
+                return {"status": 500, "message": "兑换失败，兑换码未消耗\nRedemption failed, code not consumed"}
             else:
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                return {"status": 500, "message": "兑换失败，请联系管理员"}
+                return {"status": 500, "message": "兑换失败，请联系管理员\nRedemption failed, please contact admin"}
