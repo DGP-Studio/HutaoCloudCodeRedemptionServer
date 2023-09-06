@@ -27,7 +27,6 @@ def get_homa_token() -> str:
     response = requests.post(url, json=data)
     if response.status_code != 200:
         raise Exception("Failed to get Homa token")
-
     token = json.loads(response.content.decode('utf-8'))["data"]
     return "Bearer %s" % token
 

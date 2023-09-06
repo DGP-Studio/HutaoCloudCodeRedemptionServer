@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from routers import management, user
 
-app = FastAPI(redoc_url=None)
+app = FastAPI(redoc_url=None, root_path="/code")
 app.include_router(management.router)
 app.include_router(user.router)
 
