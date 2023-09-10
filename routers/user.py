@@ -6,7 +6,7 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.post("/use")
-async def use_code_on_user(request: Request, response: Response):
+async def use_code_on_user(request: Request, response: Response) -> dict:
     # Handle Parameters
     request = await request.json()
     code = request.get("code")

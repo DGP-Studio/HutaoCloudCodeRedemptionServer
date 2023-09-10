@@ -4,12 +4,12 @@ from db_connection import db
 from datetime import datetime
 
 
-def generate_redemption_code():
+def generate_redemption_code() -> str:
     # Generate a 16-character redemption code
     return str(uuid.uuid4())[:18].upper()
 
 
-def validate_redemption_code(code: str):
+def validate_redemption_code(code: str) -> bool:
     # Check if the code is valid
     # Return True if valid, False if invalid
     sql_select = r"SELECT code FROM exchangeable WHERE code = '%s' LIMIT 1" % code
@@ -42,7 +42,7 @@ def reset_code(code: str) -> bool:
         return False
 
 
-def generate_redemption_code_list_txt(list_of_code: list):
+def generate_redemption_code_list_txt(list_of_code: list) -> str:
     # Generate a txt file containing the list of codes
     os.makedirs("generated_codes", exist_ok=True)
     file_name = "generated_codes/list_of_codes_%s.txt" % datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -57,7 +57,7 @@ def generate_redemption_code_list_txt(list_of_code: list):
     return file_name
 
 
-def add_redemption_code_to_database(code: str, value: int, description: str, added_by: str):
+def add_redemption_code_to_database(code: str, value: int, description: str, added_by: str) -> bool:
     # Add the code to the database
     # Return True if success, False if failed
     if validate_redemption_code(code):
@@ -93,7 +93,7 @@ def use_redemption_code(code: str, used_by_email: str) -> int:
             return 2
 
 
-def get_all_unused_redemption_code():
+def get_all_unused_redemption_code() -> list:
     # Get all unused codes
     sql_select = r"SELECT code, value, description FROM exchangeable WHERE used = 0"
     result = db.fetch_all(sql=sql_select)
