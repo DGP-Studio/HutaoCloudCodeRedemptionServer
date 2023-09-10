@@ -7,10 +7,11 @@ router = APIRouter(prefix="/management", tags=["management"])
 
 
 @router.post("/add")
-async def add_code_to_db(request: Request):
+async def add_code_to_db(request: Request) -> FileResponse:
     # Validate Token
     token = request.headers.get("Authorization")
-    if not authorization.is_admin(token):
+    is_admin_result, added_by = authorization.is_admin(token)
+    if not is_admin_result:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     # Handle Parameters
@@ -18,7 +19,6 @@ async def add_code_to_db(request: Request):
     number_of_code = int(request.get("n"))
     value = request.get("v")
     description = request.get("desc")
-    added_by = request.get("author")
 
     # Process to add codes
     number_of_success = 0
@@ -33,7 +33,7 @@ async def add_code_to_db(request: Request):
 
 
 @router.get("/get_all_unused", tags=["management"])
-async def get_all_unused_code(request: Request):
+async def get_all_unused_code(request: Request) -> FileResponse:
     # Validate Token
     token = request.headers.get("Authorization")
     if not authorization.is_admin(token):
